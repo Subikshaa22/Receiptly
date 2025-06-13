@@ -37,18 +37,12 @@ The project aims to build a web-based system where users can upload images of th
 - Store parsed data and provide APIs for user insights.
 
 
-## 💡 Example Output(format since u ppl commit the model structureyet . idk the format assumed moddel format if any specifications u have commit i will change accordingly in the backend)
-
+## 💡 Example Output
+-since u ppl didnot  commit the model structure yet . idk the format assumed moddel format if  u have any specifications after commiting ur ml, i will change accordingly in the backend
 [
   {
     "name": "Milk",
     "price": 45,
-    "quantity": 1,
-    "category": "Grocery"
-  },
-  {
-    "name": "Bread",
-    "price": 30,
     "quantity": 1,
     "category": "Grocery"
   }
