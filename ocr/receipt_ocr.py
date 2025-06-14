@@ -7,8 +7,41 @@ from imutils.perspective import four_point_transform
 from google import genai
 import json
 
+import pickle
+
+# Load your ML model
+with open("category_model.pkl", "rb") as f:
+    pipeline = pickle.load(f)
+
+
 # enter your gemini api key here
 client = genai.Client(api_key="")
+def categorize_with_gemini(item_name):
+    prompt = f"""
+    Categorize the following shopping item into one of these categories:
+    grocery, dairy, beverages, personal_care, medicines, stationery, electronics, fast_food, snacks,
+    cleaning_supplies, baby_products, frozen_food, bakery, fruits_vegetables, home_appliances, pet_supplies,
+    clothing, cosmetics, meat, miscellaneous.
+
+    Item: {item_name}
+
+    Just reply with the category name. If unknown, use 'miscellaneous'.
+    """
+    response = client.models.generate_content(
+        model="gemini-2.0-flash", contents=prompt
+    )
+    return response.text.strip().lower()
+def predict_category(item_name):
+    try:
+        proba = pipeline.predict_proba([item_name])[0]
+        max_proba = max(proba)
+        label = pipeline.classes_[proba.argmax()]
+        if max_proba > 0.6:
+            return label
+        else:
+            return categorize_with_gemini(item_name)
+    except Exception as e:
+        return categorize_with_gemini(item_name)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -123,8 +156,15 @@ def main():
 
     json_str = response.text.strip("```json")
 
+    
     data = json.loads(json_str)
-    #print(data)
+
+    for item in data.get("items", []):
+        name = item.get("name", "")
+        category = predict_category(name)
+        item["category"] = category
+
+    print(data)
 
 
 if __name__ == "__main__":
