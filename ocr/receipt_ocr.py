@@ -5,8 +5,9 @@ import imutils
 import pytesseract
 from imutils.perspective import four_point_transform
 from google import genai
+import json
 
-# enter your api key
+# enter your gemini api key here
 client = genai.Client(api_key="")
 
 def main():
@@ -51,8 +52,7 @@ def main():
         # approximate the contour
         peri = cv2.arcLength(c, True)
         approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-        # if our approximated contour has four points, then we can
-        # assume we have found the outline of the receipt
+        # if our approximated contour has four points, then we can assume we have found the outline of the receipt
         if len(approx) == 4:
             receiptCnt = approx
             break
@@ -62,8 +62,7 @@ def main():
     # cv2.imshow("Receipt Outline", image)
     # cv2.waitKey(0)
 
-    # if the receipt contour is empty then our script could not find the
-    # outline and we should be notified
+    # if the receipt contour is empty then our script could not find the outline and we should be notified
     if receiptCnt is None:
         raise Exception(
             (
@@ -72,32 +71,60 @@ def main():
             )
         )
 
-    # apply a four-point perspective transform to the *original* image to
-    # obtain a top-down bird's-eye view of the receipt
+    # apply a four-point perspective transform to the *original* image to obtain a top-down bird's-eye view of the receipt
     receipt = four_point_transform(img_orig, receiptCnt.reshape(4, 2) * ratio)
     # cv2.imwrite('transformed_receipt.jpg', receipt)
 
-    # apply OCR to the receipt image by assuming column data, ensuring
-    # the text is *concatenated across the row* (additionally, for your
-    # own images you may need to apply additional processing to cleanup
-    # the image, including resizing, thresholding, etc.)
+    # apply OCR to the receipt image by assuming column data, ensuring the text is concatenated across the row
     options = "--psm 6"
     text = pytesseract.image_to_string(
         cv2.cvtColor(receipt, cv2.COLOR_BGR2RGB), config=options
     )
-
-    prompt = f"""Extract structured JSON data from the following receipt text:\n\n{text}"""
-
-    response = client.models.generate_content(
-        model = "gemini-2.0-flash", contents = prompt
-    )
-    print(response.text)
 
     # show the raw output of the OCR process
     '''print("[INFO] raw output:")
     print("==================")
     print(text)
     print("\n")'''
+
+    json_format = '''{
+    "merchant_name": "",
+    "address": "",
+    "date": "",
+    "total_amount": ,
+    "subtotal": ,
+    "tax_amount": ,
+    "discounts": ,
+    "payment_method": "",
+    "transaction_id": "",
+    "total_items": ,
+    "items": [
+        {
+        "name": "",
+        "quantity": ,
+        "unit_price": ,
+        "total_price": 
+        },
+        {
+        "name": "",
+        "quantity": ,
+        "unit_price": ,
+        "total_price": 
+        }
+    ]
+    }
+    '''
+
+    prompt = f"""Extract structured JSON data in the given format from the following receipt text. If there is no transaction id, mention the bill number in the transaction id field.\n\n Json format:\n {json_format}\n\nReceipt text:\n{text}"""
+
+    response = client.models.generate_content(
+        model = "gemini-2.0-flash", contents = prompt
+    )
+
+    json_str = response.text.strip("```json")
+
+    data = json.loads(json_str)
+    #print(data)
 
 
 if __name__ == "__main__":
