@@ -6,7 +6,8 @@ import pytesseract
 from imutils.perspective import four_point_transform
 from google import genai
 
-client = genai.Client(api_key="AIzaSyDE5I-IOAEUoOUp8Rwa-pU6FU_Zy5QaW4k")
+# enter your api key
+client = genai.Client(api_key="")
 
 def main():
     parser = argparse.ArgumentParser()
