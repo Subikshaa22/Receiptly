@@ -17,7 +17,7 @@ with open("category_model.pkl", "rb") as f:
 
 
 # enter your gemini api key here
-client = genai.Client(api_key="AIzaSyB_MvXtjTtI5Ekqa0KyPlIXVXrTuzDbmPE")
+client = genai.Client(api_key="")
 def categorize_with_gemini(item_name):
     prompt = f"""
     Categorize the following shopping item into one of these categories:
