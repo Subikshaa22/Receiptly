@@ -11,11 +11,11 @@ function App() {
     <Router>
       <div className="App">
         <nav>
-          <Link to="/">Upload</Link> | <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
+          <Link to="/">Login</Link> | <Link to="/register">Register</Link>
         </nav>
         <Routes>
-          <Route path="/" element={<UploadReceipt />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/upload" element={<UploadReceipt />} />
           <Route path="/register" element={<Register />} />
         </Routes>
       </div>
