@@ -1,10 +1,13 @@
-// backend/routes/auth.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-// Example route
-router.get('/', (req, res) => {
-  res.send('Auth route is working!');
+// Dummy auth routes
+router.post("/login", (req, res) => {
+  res.json({ message: "Login route (not implemented)" });
+});
+
+router.post("/register", (req, res) => {
+  res.json({ message: "Register route (not implemented)" });
 });
 
 module.exports = router;

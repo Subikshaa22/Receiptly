@@ -32,4 +32,4 @@ pipeline.fit(X, y)
 with open("category_model.pkl", "wb") as f:
     pickle.dump(pipeline, f)
 
-print("✅ Model trained and saved as category_model.pkl")
+print("Model trained and saved as category_model.pkl")

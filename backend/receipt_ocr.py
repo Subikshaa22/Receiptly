@@ -1,3 +1,5 @@
+#Reading a receipt image, extracting text from it using OCR, structuring the data in JSON format, and categorizing each item using a ML model or Gemini AI.
+
 import argparse
 import os
 import cv2
@@ -15,7 +17,7 @@ with open("category_model.pkl", "rb") as f:
 
 
 # enter your gemini api key here
-client = genai.Client(api_key="")
+client = genai.Client(api_key="AIzaSyB_MvXtjTtI5Ekqa0KyPlIXVXrTuzDbmPE")
 def categorize_with_gemini(item_name):
     prompt = f"""
     Categorize the following shopping item into one of these categories:
@@ -164,8 +166,7 @@ def main():
         category = predict_category(name)
         item["category"] = category
 
-    print(data)
-
+    print(json.dumps(data, indent=2))
 
 if __name__ == "__main__":
     main()

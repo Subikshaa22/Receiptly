@@ -1,25 +1,26 @@
 const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const { uploadReceipt, getReceipts } = require('../controllers/receiptController');
-
 const router = express.Router();
+const Receipt = require('../models/Receipt');
 
-// Multer for image upload
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + path.extname(file.originalname);
-    cb(null, uniqueName);
+// GET all receipts
+router.get('/', async (req, res) => {
+  try {
+    const receipts = await Receipt.find();
+    res.json(receipts);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch receipts' });
   }
 });
 
-const upload = multer({ storage });
-
-// Routes
-router.post('/upload', upload.single('receipt'), uploadReceipt);
-router.get('/:userId', getReceipts);
+// POST a new receipt (if needed for testing without OCR)
+router.post('/', async (req, res) => {
+  try {
+    const receipt = new Receipt(req.body);
+    await receipt.save();
+    res.status(201).json(receipt);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to save receipt' });
+  }
+});
 
 module.exports = router;
