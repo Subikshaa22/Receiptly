@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Container, Form, Button, Spinner, Card } from 'react-bootstrap';
+import './UploadReceipt.css';
 
 const UploadReceipt = () => {
   const [file, setFile] = useState(null);
@@ -30,42 +31,59 @@ const UploadReceipt = () => {
   };
 
   return (
-    <Container className="my-5">
-      <h2 className="text-center mb-4">📤 Upload Your Receipt</h2>
+    <div className="main-page">
+      <div className="side-image left" />
+      <div className="side-image right" />
+      
+      <div className="scroll-wrapper">
+        <Container className="upload-page">
+          <h2 className="upload-heading">Upload Receipt</h2>
 
-      <Card className="p-4 shadow w-75 mx-auto">
-        <Form>
-          <Form.Group controlId="formFile" className="mb-3">
-            <Form.Label>Select an image file</Form.Label>
-            <Form.Control type="file" accept="image/*" onChange={handleFileChange} />
-          </Form.Group>
+          <Card className="upload-box">
+            <Form>
+              <Form.Group controlId="formFile">
+                <Form.Label className="upload-label">Select an image file</Form.Label>
+                <Form.Control
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="upload-input"
+                />
+              </Form.Group>
 
-          <div className="text-center">
-            <Button variant="primary" onClick={handleUpload} disabled={loading}>
-              {loading ? <><Spinner animation="border" size="sm" /> Uploading...</> : 'Extract'}
-            </Button>
-          </div>
-        </Form>
-      </Card>
+              <div className="btn-wrapper">
+                <Button className="upload-button" onClick={handleUpload} disabled={loading}>
+                  {loading ? <><Spinner animation="border" size="sm" /> Uploading...</> : 'Extract'}
+                </Button>
+              </div>
+            </Form>
+          </Card>
 
-      {receipt && (
-        <Card className="mt-5 p-4 shadow w-75 mx-auto">
-          <h4 className="mb-3">🧾 Parsed Receipt</h4>
-          <p><strong>Merchant:</strong> {receipt.merchant_name}</p>
-          <p><strong>Date:</strong> {receipt.date}</p>
-          <p><strong>Total:</strong> ₹{receipt.total_amount}</p>
+          {receipt && (
+            <Card className="receipt-display">
+              <h4 className="receipt-heading">Receipt Details</h4>
+              <p><strong>Merchant:</strong> {receipt.merchant_name}</p>
+              <p><strong>Date:</strong> {receipt.date}</p>
+              <p><strong>Total:</strong> ₹{receipt.total_amount}</p>
 
-          <h5 className="mt-3">Items</h5>
-          <ul className="list-group">
-            {receipt.items.map((item, idx) => (
-              <li key={idx} className="list-group-item">
-                {item.name} - ₹{item.total_price} ({item.category})
-              </li>
-            ))}
-          </ul>
-        </Card>
-      )}
-    </Container>
+              <h5 className="items-heading">Items</h5>
+              <ul className="items-list">
+                {receipt.items.map((item, idx) => (
+                  <li key={idx} className="item-row">
+                    <span>{item.name}</span>
+                    <span>₹{item.total_price}</span>
+                    <span className="item-category">({item.category})</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+        </Container>
+      </div>
+
+      {/* ✅ Sticky footer restored */}
+      <footer className="footer">© 2025 Wallet Watch • Powered by AI</footer>
+    </div>
   );
 };
 
