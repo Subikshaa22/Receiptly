@@ -8,16 +8,21 @@ import pytesseract
 from imutils.perspective import four_point_transform
 from google import genai
 import json
-
+from dotenv import load_dotenv
 import pickle
 
 # Load your ML model
 with open("category_model.pkl", "rb") as f:
     pipeline = pickle.load(f)
 
+# Load environment variables from .env file
+load_dotenv()
+
+# Get the API key
+api_key = os.getenv("API_KEY")
 
 # enter your gemini api key here
-client = genai.Client(api_key="")
+client = genai.Client(api_key = api_key)
 def categorize_with_gemini(item_name):
     prompt = f"""
     Categorize the following shopping item into one of these categories:

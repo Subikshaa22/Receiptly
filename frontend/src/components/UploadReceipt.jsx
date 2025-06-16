@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Container, Form, Button, Spinner, Card } from 'react-bootstrap';
 
 const UploadReceipt = () => {
   const [file, setFile] = useState(null);
@@ -29,29 +30,42 @@ const UploadReceipt = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Receipt OCR Uploader</h2>
-      <input type="file" accept="image/*" onChange={handleFileChange} />
-      <br />
-      <button onClick={handleUpload} disabled={loading}>
-        {loading ? 'Uploading...' : 'Upload & Extract'}
-      </button>
+    <Container className="my-5">
+      <h2 className="text-center mb-4">📤 Upload Your Receipt</h2>
+
+      <Card className="p-4 shadow w-75 mx-auto">
+        <Form>
+          <Form.Group controlId="formFile" className="mb-3">
+            <Form.Label>Select an image file</Form.Label>
+            <Form.Control type="file" accept="image/*" onChange={handleFileChange} />
+          </Form.Group>
+
+          <div className="text-center">
+            <Button variant="primary" onClick={handleUpload} disabled={loading}>
+              {loading ? <><Spinner animation="border" size="sm" /> Uploading...</> : 'Extract'}
+            </Button>
+          </div>
+        </Form>
+      </Card>
 
       {receipt && (
-        <div style={{ marginTop: 20 }}>
-          <h3>Parsed Receipt</h3>
+        <Card className="mt-5 p-4 shadow w-75 mx-auto">
+          <h4 className="mb-3">🧾 Parsed Receipt</h4>
           <p><strong>Merchant:</strong> {receipt.merchant_name}</p>
           <p><strong>Date:</strong> {receipt.date}</p>
           <p><strong>Total:</strong> ₹{receipt.total_amount}</p>
-          <h4>Items:</h4>
-          <ul>
+
+          <h5 className="mt-3">Items</h5>
+          <ul className="list-group">
             {receipt.items.map((item, idx) => (
-              <li key={idx}>{item.name} - ₹{item.total_price} ({item.category})</li>
+              <li key={idx} className="list-group-item">
+                {item.name} - ₹{item.total_price} ({item.category})
+              </li>
             ))}
           </ul>
-        </div>
+        </Card>
       )}
-    </div>
+    </Container>
   );
 };
 
