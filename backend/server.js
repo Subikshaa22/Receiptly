@@ -14,6 +14,8 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded images
 // In server.js or app.js
 app.use('/analysis_images', express.static(path.join(__dirname,  'public','analysis_images')));
+const chatbotRoutes = require('./routes/chatbot');
+app.use('/api/chatbot', chatbotRoutes);
 
 // Routes
 const authRoutes = require('./routes/auth');
