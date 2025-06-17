@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 import pickle
 from pymongo import MongoClient
 import datetime
+from PIL import Image
+import numpy as np
 
 
 # Load your ML model
@@ -120,7 +122,7 @@ def main():
     # apply OCR to the receipt image by assuming column data, ensuring the text is concatenated across the row
     options = "--psm 6"
     text = pytesseract.image_to_string(
-        cv2.cvtColor(receipt, cv2.COLOR_BGR2RGB), config=options
+        cv2.cvtColor(image, cv2.COLOR_BGR2RGB), config=options
     )
 
     # show the raw output of the OCR process
@@ -156,9 +158,11 @@ def main():
     }
     '''
 
-    prompt = f"""Extract structured JSON data in the given format from the following receipt text. If there is no transaction id, mention the bill number in the transaction id field.\n\n Json format:\n {json_format}\n\nReceipt text:\n{text}"""
+    prompt = f"""Extract structured JSON data in the given format from the following receipt image. If there is no transaction id, mention the bill number in the transaction id field. Convert the date to a string of DD/MM/YYYY format.\n\n Json format:\n {json_format}"""
 
-    response = model.generate_content(contents = prompt)
+    img_pil = Image.fromarray(img_orig)
+    response = model.generate_content(contents = [prompt, img_pil], stream = True)
+    response.resolve()
 
     json_str = response.text.strip("```json")
 
