@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Receiptly Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>Dashboard</h1>
+
+  <canvas id="monthlyChart" width="600" height="400"></canvas>
+  <canvas id="pieChart" width="400" height="400"></canvas>
+  <canvas id="heatmapChart" width="600" height="400"></canvas>
+
+  <h2>Predictions for next month</h2>
+  <pre id="predictions"></pre>
+
+  <h2>Gemini Saving Tips</h2>
+  <pre id="tips"></pre>
+
+  <script>
+    async function loadDashboard() {
+      const res = await fetch('/api/receipts/analysis');
+      const data = await res.json();
+
+      if (data.error) {
+        document.body.innerHTML += `<p>${data.error}</p>`;
+        return;
+      }
+
+      // Monthly trend chart
+      const ctx1 = document.getElementById('monthlyChart').getContext('2d');
+      const labels = [...new Set(data.monthly_trend.map(r => r.month_str))];
+      const categories = [...new Set(data.monthly_trend.map(r => r.category))];
+
+      const datasets = categories.map(cat => {
+        return {
+          label: cat,
+          data: labels.map(l => {
+            const match = data.monthly_trend.find(r => r.month_str === l && r.category === cat);
+            return match ? match.amount : 0;
+          }),
+          fill: false,
+          borderColor: '#' + Math.floor(Math.random()*16777215).toString(16)
+        };
+      });
+
+      new Chart(ctx1, {
+        type: 'line',
+        data: { labels, datasets }
+      });
+
+      // Pie chart
+      const ctx2 = document.getElementById('pieChart').getContext('2d');
+      new Chart(ctx2, {
+        type: 'pie',
+        data: {
+          labels: Object.keys(data.pie_data),
+          datasets: [{
+            data: Object.values(data.pie_data),
+            backgroundColor: Object.keys(data.pie_data).map(() => '#' + Math.floor(Math.random()*16777215).toString(16))
+          }]
+        }
+      });
+
+      // Predictions
+      document.getElementById('predictions').innerText = JSON.stringify(data.predictions, null, 2);
+      document.getElementById('tips').innerText = data.gemini_tips;
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>

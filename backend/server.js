@@ -12,11 +12,26 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded images
+// In server.js or app.js
+app.use('/analysis_images', express.static(path.join(__dirname,  'public','analysis_images')));
 
 // Routes
 const authRoutes = require('./routes/auth');
 const receiptRoutes = require('./routes/receipts');
 const ocrRoutes = require('./routes/ocr'); //  You missed this earlier
+
+const analysisRoutes = require('./routes/analysis');
+app.use('/api/analysis', analysisRoutes);
+
+const budgetRoutes = require('./routes/budget');
+app.use('/api/budget', budgetRoutes);
+
+
+// Serve dashboard.html at /dashboard
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/receipts', receiptRoutes);

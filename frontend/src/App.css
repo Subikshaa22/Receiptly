@@ -8,3 +8,14 @@
 h1 {
   color: #333;
 }
+
+h2 {
+  margin-top: 2rem;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow-y: auto;  /* Ensure vertical scroll when needed */
+  margin: 0;         /* Remove default margin that can cause issues */
+  padding: 0;
+}

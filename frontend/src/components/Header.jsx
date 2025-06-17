@@ -21,9 +21,14 @@ const Header = () => {
         </Navbar.Brand>
         <Nav className="ms-auto">
           {isAuthenticated ? (
-            <Nav.Link onClick={handleLogout} className="text-white">
-              Logout
-            </Nav.Link>
+            <>
+              <Nav.Link as={Link} to="/dashboard" className="text-white">
+                Dashboard
+              </Nav.Link>
+              <Nav.Link onClick={handleLogout} className="text-white">
+                Logout
+              </Nav.Link>
+            </>
           ) : (
             <>
               <Nav.Link as={Link} to="/login" className="text-white">

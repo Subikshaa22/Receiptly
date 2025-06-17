@@ -6,10 +6,13 @@ import cv2
 import imutils
 import pytesseract
 from imutils.perspective import four_point_transform
-from google import genai
+import google.generativeai as genai
 import json
 from dotenv import load_dotenv
 import pickle
+from pymongo import MongoClient
+import datetime
+
 
 # Load your ML model
 with open("category_model.pkl", "rb") as f:
@@ -22,7 +25,8 @@ load_dotenv()
 api_key = os.getenv("API_KEY")
 
 # enter your gemini api key here
-client = genai.Client(api_key = api_key)
+genai.configure(api_key=api_key)
+model = genai.GenerativeModel("gemini-2.0-flash")
 def categorize_with_gemini(item_name):
     prompt = f"""
     Categorize the following shopping item into one of these categories:
@@ -34,9 +38,7 @@ def categorize_with_gemini(item_name):
 
     Just reply with the category name. If unknown, use 'miscellaneous'.
     """
-    response = client.models.generate_content(
-        model="gemini-2.0-flash", contents=prompt
-    )
+    response = model.generate_content(contents=prompt)
     return response.text.strip().lower()
 def predict_category(item_name):
     try:
@@ -129,7 +131,6 @@ def main():
 
     json_format = '''{
     "merchant_name": "",
-    "address": "",
     "date": "",
     "total_amount": ,
     "subtotal": ,
@@ -157,9 +158,7 @@ def main():
 
     prompt = f"""Extract structured JSON data in the given format from the following receipt text. If there is no transaction id, mention the bill number in the transaction id field.\n\n Json format:\n {json_format}\n\nReceipt text:\n{text}"""
 
-    response = client.models.generate_content(
-        model = "gemini-2.0-flash", contents = prompt
-    )
+    response = model.generate_content(contents = prompt)
 
     json_str = response.text.strip("```json")
 
@@ -172,6 +171,20 @@ def main():
         item["category"] = category
 
     print(json.dumps(data, indent=2))
+
+        # Connect to MongoDB
+    client = MongoClient("mongodb://localhost:27017/")
+    db = client["Receiptly"]
+    collection = db["receipts"]
+
+    # Add uploadedAt timestamp (optional but good for sorting)
+    data["uploadedAt"] = str(datetime.datetime.now())
+
+    # Insert into the collection
+    collection.insert_one(data)
+
+    #print("[INFO] Receipt data saved to MongoDB.")
+
 
 if __name__ == "__main__":
     main()

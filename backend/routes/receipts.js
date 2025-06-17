@@ -34,6 +34,8 @@ router.post('/', upload.single('image'), async (req, res) => {
 
     try {
       const ocrData = JSON.parse(stdout);
+      console.log("Saving to DB:", ocrData);
+
 
       const receipt = new Receipt({
         ...ocrData,
@@ -49,5 +51,39 @@ router.post('/', upload.single('image'), async (req, res) => {
     }
   });
 });
+
+router.get('/analysis', async (req, res) => {
+  try {
+    const receipts = await Receipt.find();
+
+    const analysisScriptPath = path.join(__dirname, '..', 'expensesanalysis.py');
+    exec(`python ${analysisScriptPath}`, (err, stdout, stderr) => {
+      if (err) {
+        console.error('Analysis script error:', stderr);
+        return res.status(500).json({ error: 'Expense analysis failed' });
+      }
+
+      try {
+        const analysisData = JSON.parse(stdout);  // 👈 parse the JSON your Python script outputs
+        res.json({
+          receipts,
+          analysis: analysisData,
+          images: [
+            '/analysis_images/monthly_trend.png',
+            '/analysis_images/pie_chart.png',
+            '/analysis_images/heatmap.png'
+          ]
+        });
+      } catch (parseErr) {
+        console.error('Failed to parse analysis output:', parseErr);
+        res.status(500).json({ error: 'Invalid analysis output' });
+      }
+    });
+  } catch (err) {
+    console.error('DB fetch error:', err);
+    res.status(500).json({ error: 'Failed to fetch receipts' });
+  }
+});
+
 
 module.exports = router;

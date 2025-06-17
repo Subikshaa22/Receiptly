@@ -1,0 +1,7 @@
+pandas
+matplotlib
+seaborn
+pymongo
+scikit-learn
+openpyxl
+google-generativeai

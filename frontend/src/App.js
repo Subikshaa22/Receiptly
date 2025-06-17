@@ -11,6 +11,9 @@ import Login from './components/Login';
 import Register from './components/Register';
 import UploadReceipt from './components/UploadReceipt';
 
+
+import Dashboard from './components/Dashboard';
+
 function App() {
   return (
     <Router>
@@ -22,6 +25,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/upload" element={<UploadReceipt />} />
           </Routes>
         </div>
