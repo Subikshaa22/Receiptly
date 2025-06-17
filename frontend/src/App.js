@@ -10,7 +10,7 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
 import UploadReceipt from './components/UploadReceipt';
-
+import CalendarTab from './components/CalendarTab';
 
 import Dashboard from './components/Dashboard';
 import BudgetPlanner from './components/BudgetPlanner'; // adjust the path if needed
@@ -30,7 +30,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/upload" element={<UploadReceipt />} />
             <Route path="/budget-planner" element={<BudgetPlanner />} />
-
+            <Route path="/calendar" element={<CalendarTab />} />
           </Routes>
         </div>
 
