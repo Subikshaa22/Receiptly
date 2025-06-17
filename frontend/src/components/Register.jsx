@@ -76,7 +76,7 @@ function Register() {
       }}
     >
       <Container className="d-flex justify-content-center align-items-center">
-        <Card style={{ width: '400px', borderRadius: '20px', border: 'none' }} className="shadow-lg p-4 bg-white">
+        <Card style={{ width: '100%', maxWidth: '400px', borderRadius: '20px', border: 'none' }} className="shadow-lg p-4 bg-white">
           <h3 className="text-center mb-4" style={{ color: '#7a3b45' }}>Register</h3>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-4" controlId="formName">

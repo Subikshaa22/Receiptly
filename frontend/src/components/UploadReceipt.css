@@ -3,10 +3,12 @@
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* No outer scroll */
+  overflow-x: hidden; /* prevents horizontal scroll only */
   background: linear-gradient(to right, #d7b3b8e7, #af737ae4);
   font-family: 'Poppins', sans-serif;
   color: #333;
+
+  
 }
 
 .main-page {
@@ -191,3 +193,46 @@ body {
     transform: translateY(0);
   }
 }
+
+
+@media (max-width: 768px) {
+  .side-image {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .upload-page {
+    padding: 2rem 1rem;
+  }
+
+  .upload-heading {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .upload-box,
+  .receipt-display {
+    padding: 1.2rem;
+  }
+
+  .upload-button {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+    .item-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+}
+
+
+.scroll-wrapper {
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+

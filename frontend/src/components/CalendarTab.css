@@ -1,0 +1,133 @@
+/* Font & container */
+.calendar-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem 1rem;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+}
+
+/* Header */
+.calendar-heading {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #b23a48;
+}
+
+/* Calendar wrapper */
+.calendar-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+/* Rounded corners for calendar */
+.react-calendar {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+/* Calendar style */
+/* round the tiles for visual consistency */
+.react-calendar__tile {
+  border-radius: 7px;
+}
+
+/* Change selected date color to a shade of pink */
+.react-calendar__tile--active {
+  background: #f67685 !important;
+  color: white !important;
+  border-radius: 10px;
+}
+
+/* Change selected date color to a shade of pink */
+.react-calendar__tile--active {
+  background: #f4a5ae !important;
+  color: white !important;
+  border-radius: 10px;
+}
+
+
+/* Section below calendar */
+.receipt-section {
+  margin-top: 2rem;
+}
+
+.selected-date {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #a63c50;
+  text-align: center;
+}
+
+/* Receipt card */
+.receipt-card {
+  background: #fff0f3;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  overflow-wrap: break-word;
+}
+
+.receipt-content h5 {
+  font-size: 1.2rem;
+  color: #b23a48;
+  margin-bottom: 0.5rem;
+}
+
+.receipt-content p,
+.receipt-content li {
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+  word-wrap: break-word;
+}
+
+/* No receipts */
+.no-receipts {
+  font-size: 1rem;
+  color: #555;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Media Queries */
+@media (max-width: 600px) {
+  .calendar-container {
+    padding: 1rem 0.5rem;
+  }
+
+  .calendar-heading {
+    font-size: 1.6rem;
+  }
+
+  .receipt-content h5 {
+    font-size: 1.1rem;
+  }
+
+  .receipt-content p,
+  .receipt-content li {
+    font-size: 0.95rem;
+  }
+}
+
+
+
+/* Current date */
+
+/* Change today's date color to pink */
+.react-calendar__tile--now {
+  background: #fddde6 !important; /* soft pink */
+  color: #b23a48 !important; /* your theme's bold pink */
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* Current date */
+/* hover */
+
+.react-calendar__tile--now:hover {
+  background: #fbc2d4 !important;
+}
+

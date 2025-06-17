@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import axios from 'axios';
+import './CalendarTab.css';
 
 function CalendarTab() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [receipts, setReceipts] = useState([]);
 
   const fetchReceipts = async (date) => {
-    const formatted = 
-    date.getFullYear() + '-' +
-    String(date.getMonth() + 1).padStart(2, '0') + '-' +
-    String(date.getDate()).padStart(2, '0');
+    const formatted =
+      date.getFullYear() + '-' +
+      String(date.getMonth() + 1).padStart(2, '0') + '-' +
+      String(date.getDate()).padStart(2, '0');
 
     try {
       const res = await axios.get(`http://localhost:5000/api/spending?date=${formatted}`);
@@ -27,21 +28,23 @@ function CalendarTab() {
   }, [selectedDate]);
 
   return (
-    <div className="container mt-4">
-      <h2>Spending Calendar</h2>
-      <Calendar onChange={setSelectedDate} value={selectedDate} />
+    <div className="calendar-container">
+      <h2 className="calendar-heading">Spending Calendar</h2>
+      <div className="calendar-wrapper">
+        <Calendar onChange={setSelectedDate} value={selectedDate} />
+      </div>
 
-      <div className="mt-4">
-        <h4>Spending on {selectedDate.toDateString()}</h4>
+      <div className="receipt-section">
+        <h4 className="selected-date">Spending on {selectedDate.toDateString()}</h4>
         {receipts.length > 0 ? (
           receipts.map((receipt, i) => (
-            <div key={i} className="card my-2">
-              <div className="card-body">
+            <div key={i} className="receipt-card">
+              <div className="receipt-content">
                 <h5>{receipt.merchant_name}</h5>
-                <p>Address: {receipt.address}</p>
-                <p>Total Amount: ₹{receipt.total_amount}</p>
-                <p>Payment: {receipt.payment_method}</p>
-                <p>Items:</p>
+                <p><strong>Address:</strong> {receipt.address}</p>
+                <p><strong>Total Amount:</strong> ₹{receipt.total_amount}</p>
+                <p><strong>Payment:</strong> {receipt.payment_method}</p>
+                <p><strong>Items:</strong></p>
                 <ul>
                   {receipt.items.map((item, j) => (
                     <li key={j}>
@@ -53,7 +56,7 @@ function CalendarTab() {
             </div>
           ))
         ) : (
-          <p>No receipts found for this date.</p>
+          <p className="no-receipts">No receipts found for this date.</p>
         )}
       </div>
     </div>
