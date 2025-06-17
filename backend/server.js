@@ -31,6 +31,9 @@ app.use('/api/budget', budgetRoutes);
 const budgetPlanRoutes = require('./routes/budgetplan');
 app.use('/api/budgetplan', budgetPlanRoutes);
 
+const calendarRoutes = require('./routes/calendar');
+app.use('/api/spending', calendarRoutes);
+
 // Serve dashboard.html at /dashboard
 app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'dashboard.html'));
