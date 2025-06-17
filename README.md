@@ -1,17 +1,23 @@
 # 🧾 Receiptly
 
-**Receiptly** is a full-stack web application that allows users to upload images of their receipts or bills. It processes these images using Optical Character Recognition (OCR) and Natural Language Processing (NLP) to extract item-level details such as name, price, quantity, and category. The extracted data is stored in a database and presented in an interactive dashboard to help users track expenses and analyze spending patterns.
+**Receiptly** is a full-stack web application that allows users to upload images of their receipts or bills. It processes these images using Optical Character Recognition (OCR) and Natural Language Processing (NLP) to extract item-level details such as name, price, quantity, and category. The extracted data is stored in a database(MONGO DB) and presented in an interactive dashboard to help users track expenses , analyze spending patterns and plan budget for the month.
 
 ---
+
 
 ## 🚀 Features
 
 - 📸 Upload receipt images directly from the web UI  
 - 🔍 Extract structured data using Python OCR & NLP  
+- 🗄️ Extracted data is stored securely in MongoDB  
 - 📊 Track monthly expenses and remaining budget  
 - 📂 View all receipt history with itemized details  
 - 📈 Generate interactive charts for spending insights  
-- 🔐 User authentication and role-based access *(planned)*  
+- 📅 Integrated calendar to view bills based on the date written on the receipt  
+- 📊 Dashboard includes monthly spending trends, spending categories, and budget usage  
+- 💬 Chatbot for personalized suggestions and insights  
+- 📅 Budget planner implemented for each month  
+- 🔐 User authentication *(planned)*  
 
 ---
 
@@ -19,7 +25,7 @@
 
 | 🔧 Layer        | 🚀 Technology                          |
 |----------------|-----------------------------------------|
-| 💻 Frontend     | React.js, Tailwind CSS / Bootstrap      |
+| 💻 Frontend     | React.js, Bootstrap      |
 | 🛠️ Backend      | Node.js, Express.js                     |
 | 🧠 OCR & NLP    | Python, Tesseract (`pytesseract`), spaCy |
 | 🗄️ Database     | MongoDB local server                         |
