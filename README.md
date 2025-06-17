@@ -81,3 +81,19 @@ npm start
 ```
 
 ---
+## 👩‍💻👩‍💻 Developed By
+
+- **Team Leader:** Subikshaa Sakthivel  
+  [LinkedIn](https://www.linkedin.com/in/subikshaa-sakthivel777/) | [GitHub](https://github.com/Subikshaa22)  
+
+- **Member 2:** Kavya Gupta  
+  [LinkedIn](https://www.linkedin.com/in/kavya-gupta-442a62285/) | [GitHub](https://github.com/kavyagupta3011)  
+
+- **Member 3:** Vriddhi Agrawal  
+  [LinkedIn](https://www.linkedin.com/in/vriddhi-agrawal-6ba44b298) | [GitHub](https://github.com/vriddhi-07)  
+
+- **Member 4:** Divya Reddy  
+  [LinkedIn](https://www.linkedin.com/in/s-divya-455481270/) | [GitHub](https://github.com/Divyareddy8)  
+
+---
+## We are proud to contribute to tech and innovation as a team of women developers!❤️
