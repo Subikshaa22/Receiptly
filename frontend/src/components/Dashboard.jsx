@@ -79,7 +79,7 @@ const monthlyData = months.map(m => {
     setBudget(val);
     localStorage.setItem('monthlyBudget', val);
   };
-
+  // eslint-disable-next-line
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     const formData = new FormData();

@@ -13,6 +13,8 @@ import UploadReceipt from './components/UploadReceipt';
 
 
 import Dashboard from './components/Dashboard';
+import BudgetPlanner from './components/BudgetPlanner'; // adjust the path if needed
+
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/upload" element={<UploadReceipt />} />
+            <Route path="/budget-planner" element={<BudgetPlanner />} />
+
           </Routes>
         </div>
 

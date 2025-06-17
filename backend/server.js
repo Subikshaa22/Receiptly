@@ -28,6 +28,8 @@ app.use('/api/analysis', analysisRoutes);
 const budgetRoutes = require('./routes/budget');
 app.use('/api/budget', budgetRoutes);
 
+const budgetPlanRoutes = require('./routes/budgetplan');
+app.use('/api/budgetplan', budgetPlanRoutes);
 
 // Serve dashboard.html at /dashboard
 app.get('/dashboard', (req, res) => {

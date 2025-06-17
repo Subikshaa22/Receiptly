@@ -25,6 +25,9 @@ const Header = () => {
               <Nav.Link as={Link} to="/dashboard" className="text-white">
                 Dashboard
               </Nav.Link>
+              <Nav.Link as={Link} to="/budget-planner" className="text-white">
+                Budget Planner
+              </Nav.Link>
               <Nav.Link onClick={handleLogout} className="text-white">
                 Logout
               </Nav.Link>
