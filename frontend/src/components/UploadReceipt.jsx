@@ -81,8 +81,7 @@ const UploadReceipt = () => {
         </Container>
       </div>
 
-      {/* ✅ Sticky footer restored */}
-      <footer className="footer">© 2025 Wallet Watch • Powered by AI</footer>
+      
     </div>
   );
 };

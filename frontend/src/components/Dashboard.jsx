@@ -36,6 +36,7 @@ export default function Dashboard() {
 
 
 const monthlyData = months.map(m => {
+  // eslint-disable-next-line no-unused-vars
   const [year, month] = m.split('-');  // e.g., "2024-03" → ["2024", "03"]
   const row = { 
     month: monthNames[parseInt(month, 10) - 1]  // Convert "03" → March
