@@ -22,7 +22,7 @@
 | 💻 Frontend     | React.js, Tailwind CSS / Bootstrap      |
 | 🛠️ Backend      | Node.js, Express.js                     |
 | 🧠 OCR & NLP    | Python, Tesseract (`pytesseract`), spaCy |
-| 🗄️ Database     | MongoDB Atlas                           |
+| 🗄️ Database     | MongoDB local server                         |
 | 📊 Charts       | Chart.js or Recharts                    |
 
 ---
@@ -74,5 +74,4 @@ npm install
 npm start
 ```
 
-```
-
+---
