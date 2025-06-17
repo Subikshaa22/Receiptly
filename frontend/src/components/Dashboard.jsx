@@ -25,6 +25,34 @@ export default function Dashboard() {
       .catch(console.error);
   }, []);
 
+  useEffect(() => {
+    fetch('http://localhost:5000/api/budget')
+      .then(res => {
+        if (!res.ok) throw new Error(`Budget fetch failed: ${res.status}`);
+        return res.json();
+      })
+      .then(b => {
+        setBudget(b.budget);
+        localStorage.setItem('monthlyBudget', b.budget);
+      })
+      .catch(err => console.error("Error loading budget:", err));
+  }, []);
+
+  const [budgetPlans, setBudgetPlans] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/budgetplan/all')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setBudgetPlans(data);
+        } else {
+          console.error('Unexpected budget plan format', data);
+        }
+      })
+      .catch(err => console.error('Error fetching budget plans:', err));
+  }, []);
+
   if (!data) return <p>Loading dashboard...</p>;
 
   const months = Object.keys(data.monthlyTrend).sort();
@@ -35,18 +63,12 @@ export default function Dashboard() {
     "July", "August", "September", "October", "November", "December"
   ];
 
-
-
-const monthlyData = months.map(m => {
-  // eslint-disable-next-line no-unused-vars
-  const [year, month] = m.split('-');  // e.g., "2024-03" → ["2024", "03"]
-  const row = { 
-    month: monthNames[parseInt(month, 10) - 1]  // Convert "03" → March
-  };
-  cats.forEach(c => row[c] = data.monthlyTrend[m][c] || 0);
-  return row;
-});
-
+  const monthlyData = months.map(m => {
+    const [year, month] = m.split('-');
+    const row = { month: monthNames[parseInt(month, 10) - 1] };
+    cats.forEach(c => row[c] = data.monthlyTrend[m][c] || 0);
+    return row;
+  });
 
   const pieData = cats.map(c => ({ name: c, value: data.categoryPie[c] || 0 }));
 
@@ -60,46 +82,8 @@ const monthlyData = months.map(m => {
   const totalSpent = Object.values(data.categoryPie).reduce((a, b) => a + b, 0);
   const usedPercent = budget > 0 ? totalSpent / budget : 0;
 
-  const topCategories = [...cats]
-    .sort((a, b) => (data.categoryPie[b] || 0) - (data.categoryPie[a] || 0))
-    .slice(0, 3);
-
-  let biggestDay = '';
-  let biggestDayAmt = 0;
-  for (const [day, catData] of Object.entries(data.weekdayHeat)) {
-    const dayTotal = Object.values(catData).reduce((a, b) => a + b, 0);
-    if (dayTotal > biggestDayAmt) {
-      biggestDayAmt = dayTotal;
-      biggestDay = day;
-    }
-  }
-
-  const handleBudgetChange = (e) => {
-    const val = parseFloat(e.target.value);
-    setBudget(val);
-    localStorage.setItem('monthlyBudget', val);
-  };
-  // eslint-disable-next-line
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append('receipt', file);
-
-    fetch('http://localhost:5000/api/upload-receipt', {
-      method: 'POST',
-      body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log('Receipt data:', data);
-      // optionally update dashboard state
-    })
-    .catch(err => console.error('Upload error', err));
-  };
-
   const handleChatSend = async () => {
     if (!input.trim()) return;
-
     const userMsg = { sender: 'You', text: input.trim() };
     setMessages(prev => [...prev, userMsg]);
 
@@ -110,16 +94,13 @@ const monthlyData = months.map(m => {
         body: JSON.stringify({ question: input.trim() })
       });
       const data = await res.json();
-
-      const botMsg = { sender: 'Gemini', text: data.answer || 'No response' };
+      const botMsg = { sender: 'BudgetBot', text: data.answer || 'No response' };
       setMessages(prev => [...prev, botMsg]);
-
     } catch (err) {
-      const botMsg = { sender: 'Gemini', text: 'Error contacting chatbot' };
+      const botMsg = { sender: 'BudgetBot', text: 'Error contacting chatbot' };
       setMessages(prev => [...prev, botMsg]);
       console.error(err);
     }
-
     setInput('');
   };
 
@@ -130,9 +111,8 @@ const monthlyData = months.map(m => {
       gap: '2rem',
       padding: '2rem'
     }}>
-      {/* Monthly Trend */}
       <div style={{ background: '#fff', padding: '1rem', borderRadius: '8px' }}>
-        <h3>Monthly Spending Trend</h3>
+        <h3 style={{ color: '#7a3b45' }}>Monthly Spending Trend</h3>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={monthlyData}>
             <XAxis dataKey="month" />
@@ -144,9 +124,8 @@ const monthlyData = months.map(m => {
         </ResponsiveContainer>
       </div>
 
-      {/* Pie Chart */}
       <div style={{ background: '#fff', padding: '1rem', borderRadius: '8px' }}>
-        <h3>Spending by Category</h3>
+        <h3 style={{ color: '#7a3b45' }}>Spending by Category</h3>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={100} label>
@@ -157,9 +136,8 @@ const monthlyData = months.map(m => {
         </ResponsiveContainer>
       </div>
 
-      {/* Heatmap */}
       <div style={{ gridColumn: '1 / -1', background: '#fff', padding: '1rem', borderRadius: '8px' }}>
-        <h3>Weekday Spending Heatmap (Stacked Bar)</h3>
+        <h3 style={{ color: '#7a3b45' }}>Weekday Spending Heatmap (Stacked Bar)</h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={heatData}>
             <XAxis dataKey="day" />
@@ -171,75 +149,72 @@ const monthlyData = months.map(m => {
         </ResponsiveContainer>
       </div>
 
-      {/* Budget + Summary section */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '1rem'
-      }}>
-        <div style={{ background: '#fff', padding: '1rem', borderRadius: '10px' }}>
-          <h3>Budget Usage</h3>
-          <p>
-            Monthly Budget:
-            <input 
-              type="number"
-              value={budget}
-              onChange={handleBudgetChange}
-              style={{ marginLeft: '0.5rem', width: '100px' }}
-            />
-          </p>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '180px',
-            overflow: 'hidden'
-          }}>
-            <GaugeChart
-              id="gauge-chart"
-              nrOfLevels={20}
-              percent={Math.min(usedPercent, 1)}
-              colors={["#52c41a", "#ff4d4f"]}
-              arcWidth={0.3}
-              textColor="#000"
-              style={{ width: '100%', maxWidth: '200px' }}
-            />
-          </div>
-          <p style={{ textAlign: 'center' }}>
-            {(usedPercent * 100).toFixed(1)}% of budget used
-          </p>
-          <p style={{ textAlign: 'center' }}>
-            Total Spent: {totalSpent.toFixed(2)}
-          </p>
-        </div>
+      <div style={{ gridColumn: '1 / -1', background: '#fff', padding: '1rem', borderRadius: '8px' }}>
+        <h3 style={{ color: '#7a3b45' }}>Budget Usage</h3>
+        {budgetPlans.length > 0 && (() => {
+          const latest = budgetPlans[0];
+          const catTotal = latest.categories.reduce((sum, c) => sum + c.amount, 0);
+          const savingsPercent = latest.income > 0 ? latest.savings / latest.income : 0;
+          const spendingPercent = latest.income > 0 ? catTotal / latest.income : 0;
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ background: '#fff', padding: '1rem', borderRadius: '8px' }}>
-            <h4>Top 3 Categories</h4>
-            <ul style={{ listStyle: 'none', paddingLeft: 0, margin: 0 }}>
-              {topCategories.map(cat => (
-                <li key={cat}>
-                  {cat}: {data.categoryPie[cat].toFixed(2)}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div style={{ background: '#fff', padding: '1rem', borderRadius: '8px' }}>
-            <h4>Biggest Spending Day</h4>
-            <p>{biggestDay}: {biggestDayAmt.toFixed(2)}</p>
-          </div>
-        </div>
+          return (
+            <>
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <div style={{ width: '200px' }}>
+                  <GaugeChart
+                    id="gauge-savings"
+                    nrOfLevels={20}
+                    percent={Math.min(savingsPercent, 1)}
+                    colors={["#1890ff", "#ff4d4f"]}
+                    arcWidth={0.3}
+                    textColor="#000"
+                  />
+                  <p style={{ textAlign: 'center',color: '#7a3b45' }}>
+                    Savings: {(savingsPercent * 100).toFixed(1)}%
+                  </p>
+                </div>
+                <div style={{ width: '200px' }}>
+                  <GaugeChart
+                    id="gauge-spending"
+                    nrOfLevels={20}
+                    percent={Math.min(spendingPercent, 1)}
+                    colors={["#faad14", "#ff4d4f"]}
+                    arcWidth={0.3}
+                    textColor="#000"
+                  />
+                  <p style={{ textAlign: 'center',color: '#7a3b45' }}>
+                    Planned Spending: {(spendingPercent * 100).toFixed(1)}%
+                  </p>
+                </div>
+                {latest.categories.map((cat, idx) => {
+                  const catPercent = latest.income > 0 ? cat.amount / latest.income : 0;
+                  return (
+                    <div key={idx} style={{ width: '200px',color: '#7a3b45' }}>
+                      <GaugeChart
+                        id={`gauge-cat-${idx}`}
+                        nrOfLevels={20}
+                        percent={Math.min(catPercent, 1)}
+                        colors={["#52c41a", "#ff4d4f"]}
+                        arcWidth={0.3}
+                        textColor="#000"
+                      />
+                      <p style={{ textAlign: 'center' }}>
+                        {cat.name}: {(catPercent * 100).toFixed(1)}%
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          );
+        })()}
+        <p style={{ textAlign: 'center', color: '#7a3b45' }}>
+          Total Spent: {totalSpent.toFixed(2)}
+        </p>
       </div>
 
-      {/* Chatbot */}
-      <div style={{
-        gridColumn: '1 / -1',
-        background: '#fff',
-        padding: '1rem',
-        borderRadius: '8px'
-      }}>
-        <h3>💬 Analyser Assistant</h3>
-
+      <div style={{ gridColumn: '1 / -1', background: '#fff', padding: '1rem', borderRadius: '8px' }}>
+        <h3 style={{ color: '#7a3b45' }}>Analyser Assistant</h3>
         <div id="chatbox" style={{
           height: '200px',
           overflowY: 'auto',
@@ -254,18 +229,35 @@ const monthlyData = months.map(m => {
             </div>
           ))}
         </div>
-
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <input 
-            type="text" 
+          <input
+            type="text"
             value={input}
             onChange={e => setInput(e.target.value)}
             placeholder="Ask about your expenses..."
-            style={{ flex: 1, padding: '8px' }}
+            style={{ 
+              flex: 1, 
+              padding: '8px 12px',
+              borderRadius: '20px',  // make rounded
+              border: '1px solid #7a3b45',
+              outline: 'none',
+              color: '#7a3b45'
+            }}
           />
-          <button onClick={handleChatSend} style={{ padding: '8px 12px' }}>
+          <button 
+            onClick={handleChatSend}
+            style={{ 
+              padding: '8px 16px',
+              borderRadius: '20px',  // make rounded
+              border: 'none',
+              background: '#7a3b45',
+              color: '#fff',
+              cursor: 'pointer'
+            }}
+          >
             Send
           </button>
+
         </div>
       </div>
     </div>

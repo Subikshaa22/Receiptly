@@ -17,6 +17,9 @@ app.use('/analysis_images', express.static(path.join(__dirname,  'public','analy
 const chatbotRoutes = require('./routes/chatbot');
 app.use('/api/chatbot', chatbotRoutes);
 
+const userRoutes = require('./routes/user');
+app.use('/api', userRoutes);
+
 // Routes
 const authRoutes = require('./routes/auth');
 const receiptRoutes = require('./routes/receipts');
