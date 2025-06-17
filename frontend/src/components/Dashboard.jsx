@@ -35,14 +35,18 @@ export default function Dashboard() {
     "July", "August", "September", "October", "November", "December"
   ];
 
-  const monthlyData = months.map(m => {
-    const [, month] = m.split('-');
-    const row = { 
-      month: monthNames[parseInt(month, 10) - 1]
-    };
-    cats.forEach(c => row[c] = data.monthlyTrend[m][c] || 0);
-    return row;
-  });
+
+
+const monthlyData = months.map(m => {
+  // eslint-disable-next-line no-unused-vars
+  const [year, month] = m.split('-');  // e.g., "2024-03" → ["2024", "03"]
+  const row = { 
+    month: monthNames[parseInt(month, 10) - 1]  // Convert "03" → March
+  };
+  cats.forEach(c => row[c] = data.monthlyTrend[m][c] || 0);
+  return row;
+});
+
 
   const pieData = cats.map(c => ({ name: c, value: data.categoryPie[c] || 0 }));
 
