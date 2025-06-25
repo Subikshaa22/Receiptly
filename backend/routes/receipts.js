@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const { exec } = require('child_process');
 const Receipt = require('../models/Receipt');
+const protect = require('../middleware/authMiddleware');
 
 // Setup multer to store images in /uploads
 const upload = multer({ dest: 'uploads/' });
@@ -39,6 +40,7 @@ router.post('/', upload.single('image'), async (req, res) => {
 
       const receipt = new Receipt({
         ...ocrData,
+        user: req.user._id,
         imageUrl: req.file.path,
         uploadedAt: new Date(),
       });

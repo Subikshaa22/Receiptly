@@ -3,13 +3,14 @@ const multer = require('multer');
 const { spawn } = require('child_process');
 const path = require('path');
 const Receipt = require('../models/Receipt');
+const protect = require('../middleware/authMiddleware'); //  Import auth middleware
 const router = express.Router();
 
 // Upload config
 const upload = multer({ dest: 'uploads/' });
 
-// POST /api/ocr
-router.post('/', upload.single('image'), (req, res) => {
+// Secure the route
+router.post('/', protect, upload.single('image'), (req, res) => {
   const imagePath = path.join(__dirname, '..', req.file.path);
 
   const python = spawn('python', ['receipt_ocr.py', '-i', imagePath]);
@@ -34,6 +35,7 @@ router.post('/', upload.single('image'), (req, res) => {
     try {
       const jsonData = JSON.parse(dataBuffer);
       jsonData.imageUrl = `/uploads/${req.file.filename}`;
+      jsonData.user = req.user._id; //  Link to user
 
       const receipt = new Receipt(jsonData);
       await receipt.save();

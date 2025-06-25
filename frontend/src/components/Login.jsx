@@ -14,23 +14,23 @@ function Login() {
 
   // Handles form submission and API call
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-            // Sending login request to backend with email and password
+  e.preventDefault();
+  try {
+    const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
 
-      await axios.post('http://localhost:5000/api/auth/login', { email, password });
+    //  Save the JWT token to localStorage
+    localStorage.setItem('token', response.data.token);
 
-            // If successful, update authentication state
+    //  Update auth context
+    setIsAuthenticated(true);
 
-      setIsAuthenticated(true);
+    //  Navigate to upload page
+    navigate('/upload');
+  } catch (err) {
+    alert(err.response?.data?.message || 'Login failed');
+  }
+};
 
-            // Redirect user to the upload page
-
-      navigate('/upload');
-    } catch (err) {
-      alert(err.response?.data?.message || 'Login failed');
-    }
-  };
 
 
     // JSX layout for the Login UI

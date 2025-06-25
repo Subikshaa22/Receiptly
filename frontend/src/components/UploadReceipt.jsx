@@ -18,10 +18,18 @@ const UploadReceipt = () => {
     const formData = new FormData();
     formData.append('image', file);
 
+    const token = localStorage.getItem('token'); // 🔐 Get token from login
+
     try {
       setLoading(true);
-      const res = await axios.post('http://localhost:5000/api/receipts', formData);
-      setReceipt(res.data);
+
+      const res = await axios.post('http://localhost:5000/api/ocr', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // 🔐 Send token to backend
+        },
+      });
+
+      setReceipt(res.data); // 📥 Save OCR response
     } catch (err) {
       console.error(err);
       alert("Failed to upload");
@@ -34,7 +42,7 @@ const UploadReceipt = () => {
     <div className="main-page">
       <div className="side-image left" />
       <div className="side-image right" />
-      
+
       <div className="scroll-wrapper">
         <Container className="upload-page">
           <h2 className="upload-heading">Upload Receipt</h2>
@@ -53,7 +61,13 @@ const UploadReceipt = () => {
 
               <div className="btn-wrapper">
                 <Button className="upload-button" onClick={handleUpload} disabled={loading}>
-                  {loading ? <><Spinner animation="border" size="sm" /> Uploading...</> : 'Extract'}
+                  {loading ? (
+                    <>
+                      <Spinner animation="border" size="sm" /> Uploading...
+                    </>
+                  ) : (
+                    'Extract'
+                  )}
                 </Button>
               </div>
             </Form>
@@ -62,26 +76,28 @@ const UploadReceipt = () => {
           {receipt && (
             <Card className="receipt-display">
               <h4 className="receipt-heading">Receipt Details</h4>
-              <p><strong>Merchant:</strong> {receipt.merchant_name}</p>
-              <p><strong>Date:</strong> {receipt.date}</p>
-              <p><strong>Total:</strong> ₹{receipt.total_amount}</p>
+              <p><strong>Merchant:</strong> {receipt.merchant_name || 'N/A'}</p>
+              <p><strong>Date:</strong> {receipt.date || 'N/A'}</p>
+              <p><strong>Total:</strong> ₹{receipt.total_amount || 0}</p>
 
               <h5 className="items-heading">Items</h5>
               <ul className="items-list">
-                {receipt.items.map((item, idx) => (
-                  <li key={idx} className="item-row">
-                    <span>{item.name}</span>
-                    <span>₹{item.total_price}</span>
-                    <span className="item-category">({item.category})</span>
-                  </li>
-                ))}
+                {receipt.items && receipt.items.length > 0 ? (
+                  receipt.items.map((item, idx) => (
+                    <li key={idx} className="item-row">
+                      <span>{item.name}</span>
+                      <span>₹{item.total_price}</span>
+                      <span className="item-category">({item.category})</span>
+                    </li>
+                  ))
+                ) : (
+                  <li>No items found</li>
+                )}
               </ul>
             </Card>
           )}
         </Container>
       </div>
-
-      
     </div>
   );
 };

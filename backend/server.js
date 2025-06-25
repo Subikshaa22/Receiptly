@@ -8,50 +8,44 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// ------------------------ MIDDLEWARE ------------------------
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded images
-// In server.js or app.js
-app.use('/analysis_images', express.static(path.join(__dirname,  'public','analysis_images')));
-const chatbotRoutes = require('./routes/chatbot');
-app.use('/api/chatbot', chatbotRoutes);
 
-const userRoutes = require('./routes/user');
-app.use('/api', userRoutes);
+// Serve static files (images, analysis output)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/analysis_images', express.static(path.join(__dirname, 'public', 'analysis_images')));
 
-// Routes
-const authRoutes = require('./routes/auth');
-const receiptRoutes = require('./routes/receipts');
-const ocrRoutes = require('./routes/ocr'); //  You missed this earlier
+// ------------------------ ROUTES ------------------------
+// Auth and User
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api', require('./routes/user'));
 
-const analysisRoutes = require('./routes/analysis');
-app.use('/api/analysis', analysisRoutes);
+// OCR and Receipts
+app.use('/api/ocr', require('./routes/ocr'));
+app.use('/api/receipts', require('./routes/receipts'));
 
-const budgetRoutes = require('./routes/budget');
-app.use('/api/budget', budgetRoutes);
+// Budget-related
+app.use('/api/budget', require('./routes/budget'));
+app.use('/api/budgetplan', require('./routes/budgetplan'));
 
-const budgetPlanRoutes = require('./routes/budgetplan');
-app.use('/api/budgetplan', budgetPlanRoutes);
+// Analysis and Calendar
+app.use('/api/analysis', require('./routes/analysis'));
+app.use('/api/spending', require('./routes/calendar'));
 
-const calendarRoutes = require('./routes/calendar');
-app.use('/api/spending', calendarRoutes);
+// Chatbot (optional/bonus feature)
+app.use('/api/chatbot', require('./routes/chatbot'));
 
-// Serve dashboard.html at /dashboard
+// Serve HTML page (if needed)
 app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
-
-app.use('/api/auth', authRoutes);
-app.use('/api/receipts', receiptRoutes);
-app.use('/api/ocr', ocrRoutes); //  You missed this earlier
-
-// MongoDB connection
+// ------------------------ MONGODB CONNECTION ------------------------
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log(" MongoDB connected locally"))
-  .catch(err => console.error(" DB Connection Error:", err));
+  .then(() => console.log(" MongoDB connected successfully"))
+  .catch(err => console.error(" MongoDB connection error:", err));
 
-// Start server
+// ------------------------ START SERVER ------------------------
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(` Server running at http://localhost:${PORT}`));

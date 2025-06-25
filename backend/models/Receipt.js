@@ -9,6 +9,11 @@ const ItemSchema = new mongoose.Schema({
 });
 
 const ReceiptSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   merchant_name: String,
   address: String,
   date: String,

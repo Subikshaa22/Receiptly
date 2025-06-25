@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const BudgetPlan = require('../models/BudgetPlan');
+const protect = require('../middleware/authMiddleware');
 
-// Save budget plan
-router.post('/save', async (req, res) => {
+router.post('/save', protect, async (req, res) => {
   try {
     const { income, savings, categories } = req.body;
-    const plan = new BudgetPlan({ income, savings, categories });
+    const plan = new BudgetPlan({ user: req.user._id, income, savings, categories });
     await plan.save();
     res.status(201).json({ message: 'Budget plan saved successfully!' });
   } catch (error) {
@@ -14,10 +14,9 @@ router.post('/save', async (req, res) => {
   }
 });
 
-// Get all saved plans
-router.get('/all', async (req, res) => {
+router.get('/all', protect, async (req, res) => {
   try {
-    const plans = await BudgetPlan.find().sort({ createdAt: -1 });
+    const plans = await BudgetPlan.find({ user: req.user._id }).sort({ createdAt: -1 });
     res.json(plans);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching plans.', error });

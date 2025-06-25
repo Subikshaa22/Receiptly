@@ -1,3 +1,5 @@
+#  Final Version of `expensesanalysis.py` with User-Specific Filter
+
 import pymongo
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -10,16 +12,23 @@ from bson import ObjectId
 # Prevent Matplotlib permission error
 os.environ['MPLCONFIGDIR'] = os.environ.get('TEMP', '/tmp')
 
+#  Get the user's email from environment variable or command-line later
+USER_EMAIL = os.getenv("CURRENT_USER_EMAIL", "divya@example.com")  # Replace with dynamic if needed
+
 # Connect to MongoDB
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = client["Receiptly"]
 receipts = db["receipts"]
 
-# ✅ Fetch all receipts
-data = list(receipts.find())
+#  Fetch only receipts belonging to that user
+if not USER_EMAIL:
+    print(json.dumps({"error": "User email not provided"}))
+    exit()
+
+data = list(receipts.find({"userEmail": USER_EMAIL}))
 
 if not data:
-    print(json.dumps({"error": "No receipts found"}))
+    print(json.dumps({"error": "No receipts found for user"}))
     exit()
 
 # Convert ObjectId to str and clean numeric fields

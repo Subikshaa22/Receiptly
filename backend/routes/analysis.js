@@ -1,16 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const Receipt = require('../models/Receipt');
+const protect = require('../middleware/authMiddleware'); //  add this
 
-router.get('/', async (req, res) => {
+router.get('/', protect, async (req, res) => {
   try {
-    const receipts = await Receipt.find().lean();
+    const userId = req.user._id;
+    const receipts = await Receipt.find({ user: userId }).lean();
+
     const monthlyTrend = {}, categoryPie = {}, weekdayHeat = {};
     let totalSpent = 0;
 
     receipts.forEach(r => {
       const d = new Date(r.uploadedAt);
-      const month = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      const month = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
       const day = d.toLocaleString('en-US', { weekday: 'long' });
 
       (r.items || []).forEach(item => {
