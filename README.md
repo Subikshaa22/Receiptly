@@ -100,4 +100,4 @@ npm start
 
 
 ##  Demo Video
-- [Receiptly_Demo_Video](https://youtu.be/pO1Cqyro8Tk)
+- [Receiptly_Demo_Video](https://youtu.be/TGZ0zK84E-c?si=EmldNevfzTlXnxzk)
